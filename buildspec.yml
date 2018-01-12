@@ -1,0 +1,61 @@
+version: 0.2
+phases:
+ install:
+   commands:
+     - |
+       export DEBIAN_FRONTEND=noninteractive
+
+       #Install php7.1
+       apt-get update
+       apt-get install -y  software-properties-common
+       LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
+       apt-get update
+
+       # Install PHP
+       apt-get install -y php7.1\
+                php7.1-ldap \
+                php7.1-xml \
+                php7.1-xmlrpc \
+                php7.1-zip \
+                php7.1-mysql \
+                php7.1-mbstring \
+                php7.1-mcrypt \
+                php7.1-gd \
+                php7.1-readline \
+                php7.1-opcache \
+                php7.1-xdebug \
+                php7.1-dom \
+                php-xdebug \
+                php7.1-curl \
+                unzip
+
+       # Install MySQL (do you need it? If not, delete this)
+       apt-get install -y mysql-server
+
+       #Enable xdebug
+       phpenmod xdebug
+
+       #Install composer
+       php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+       php composer-setup.php ;
+       php -r "unlink('composer-setup.php');" ;
+       mv composer.phar /usr/local/bin/composer
+
+       #Various handy node based dev tools
+       npm install -g gulp
+       npm install -g grunt
+       npm install -g bower
+       npm install -g webpack
+     - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
+ build:
+   commands:
+     - echo Build started on `date`
+     - echo Installing composer deps
+     - composer install --no-progress --no-suggest
+
+ post_build:
+   commands:
+     - echo Build completed on `date`
+     - /usr/bin/mysql  -u root -e "GRANT ALL ON *.* TO 'idealstack'@'localhost' IDENTIFIED BY 'idealstack' WITH GRANT OPTION"
+     - mysqladmin -u idealstack --password=idealstack  create idealstack_test
+     - ./vendor/bin/phpunit
