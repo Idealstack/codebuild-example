@@ -65,7 +65,4 @@ phases:
 
 cache:
   paths:
-    - '/var/cache/apt/archives'
-    - '/root/.composer'
-    - '/root/.npm'
-    - '/usr/lib/node_modules'
+    - '/var/cache/apt'
