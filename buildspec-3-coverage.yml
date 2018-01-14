@@ -72,8 +72,8 @@ phases:
      # Run your tests
      - ./vendor/bin/phpunit --coverage-html /tmp/coverage
 
- artifacts:
-   files:
+artifacts:
+  files:
     - /tmp/coverage
 
 
