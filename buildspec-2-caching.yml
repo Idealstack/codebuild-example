@@ -48,6 +48,7 @@ phases:
          npm install -g yarn
          npm install -g webpack
      - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
+     - ls -al /root
  build:
    commands:
      - echo Build started on `date`
@@ -65,4 +66,7 @@ phases:
 
 cache:
   paths:
-    - '/var/cache/apt'
+    - '/var/cache/apt/**'
+    - '/root/.composer/**'
+    - '/root/.npm/**'
+    - '/usr/lib/node_modules/**'
