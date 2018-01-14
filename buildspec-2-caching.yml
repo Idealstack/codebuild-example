@@ -43,13 +43,16 @@ phases:
          mv composer.phar /usr/local/bin/composer
 
          #Various handy node based dev tools - do you need these during your build? Comment if not.
-         npm install -g gulp
-         npm install -g grunt
-         npm install -g bower
-         npm install -g yarn
-         npm install -g webpack
+         #npm install -g gulp
+         #npm install -g grunt
+         #npm install -g bower
+         #npm install -g yarn
+         #npm install -g webpack
      - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
      - ls -al /root
+     - ls -ld ~
+     - ls -al /var/cache/apt/*
+
  build:
    commands:
      - echo Build started on `date`
