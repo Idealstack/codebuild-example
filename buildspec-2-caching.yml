@@ -2,11 +2,10 @@ version: 0.2
 phases:
  install:
    commands:
-     - cat  /etc/apt/apt.conf.d/*
-
      #This file configures apt to remove it's cache after installs - we want this cache, so we remove this config
      - rm -f /etc/apt/apt.conf.d/docker-clean
-     - ls -al /var/cache/apt/
+
+     #Install required packages
      - |
          export DEBIAN_FRONTEND=noninteractive
 
@@ -53,9 +52,6 @@ phases:
 
     # Start Mysql if you need it
      - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
-     - ls -al /root
-     - ls -ld ~
-     - ls -al /var/cache/apt/*
 
  build:
    commands:

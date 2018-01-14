@@ -2,11 +2,10 @@ version: 0.2
 phases:
  install:
    commands:
-     - cat  /etc/apt/apt.conf.d/*
-
      #This file configures apt to remove it's cache after installs - we want this cache, so we remove this config
      - rm -f /etc/apt/apt.conf.d/docker-clean
-     - ls -al /var/cache/apt/
+
+     #Install required packages
      - |
          export DEBIAN_FRONTEND=noninteractive
 
@@ -47,15 +46,12 @@ phases:
          mv composer.phar /usr/local/bin/composer
 
          #Various handy node based dev tools - do you need these during your build? Comment if not.
-         npm install -g gulp
-         npm install -g grunt
-         npm install -g webpack
+         #npm install -g gulp
+         #npm install -g grunt
+         #npm install -g webpack
 
     # Start Mysql if you need it
      - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
-     - ls -al /root
-     - ls -ld ~
-     - ls -al /var/cache/apt/*
 
  build:
    commands:
@@ -66,11 +62,20 @@ phases:
  post_build:
    commands:
      - echo Build completed on `date`
+
+     # Create a mysql database
      # Do you need to do this? In many cases phpunit will use sqllite or similar to avoid the need for a real DB.
      # If you don't need it delete it
      - /usr/bin/mysql  -u root -e "GRANT ALL ON *.* TO 'test'@'localhost' IDENTIFIED BY '' WITH GRANT OPTION"
      - mysqladmin -u test create test
-     - ./vendor/bin/phpunit
+
+     # Run your tests
+     - ./vendor/bin/phpunit --coverage-html /tmp/coverage
+
+ artifacts:
+   files:
+    - /tmp/coverage
+
 
 cache:
   paths:
