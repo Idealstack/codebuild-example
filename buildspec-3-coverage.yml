@@ -72,7 +72,7 @@ phases:
      # Run your tests
      - ./vendor/bin/phpunit --coverage-html coverage
 
-     - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}"
+     - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}/coverage"
 
 
 cache:
