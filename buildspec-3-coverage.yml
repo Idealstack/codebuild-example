@@ -72,6 +72,8 @@ phases:
      # Run your tests
      - ./vendor/bin/phpunit --coverage-html /tmp/coverage
 
+     - ls -l /tmp/coverage
+
 artifacts:
   files:
     - /tmp/coverage/**/*
@@ -80,11 +82,11 @@ artifacts:
 cache:
   paths:
     #Debian package caches, so we don't need to keep redownloading debian packages:
-    - '/var/cache/apt/**/*'
+    - /var/cache/apt/**/*
 
     # Composer cache:
-    - '/root/.composer/**/*'
+    - /root/.composer/**/*
 
     # Node modules, if you need nodejs based tools like webpack during your build
-    - '/root/.npm/**/*'
-    - '/usr/lib/node_modules/**/*'
+    - /root/.npm/**/*
+    - /usr/lib/node_modules/**/*
