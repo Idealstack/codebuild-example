@@ -70,13 +70,9 @@ phases:
      - mysqladmin -u test create test
 
      # Run your tests
-     - ./vendor/bin/phpunit --coverage-html /tmp/coverage
+     - ./vendor/bin/phpunit --coverage-html coverage
 
-     - ls -l /tmp/coverage
-
-artifacts:
-  files:
-    - /tmp/coverage/**/*
+     - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}"
 
 
 cache:
