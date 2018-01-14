@@ -74,7 +74,7 @@ phases:
 
 artifacts:
   files:
-    - /tmp/coverage
+    - /tmp/coverage/**/*
 
 
 cache:
