@@ -2,7 +2,8 @@ version: 0.2
 phases:
  install:
    commands:
-     - ls -al /var/cache/apt/*
+     - ls -al /etc/apt/apt.conf.d/
+     - ls -al /var/cache/apt/
      - |
          export DEBIAN_FRONTEND=noninteractive
 
