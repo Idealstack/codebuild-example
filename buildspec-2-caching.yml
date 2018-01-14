@@ -2,7 +2,8 @@ version: 0.2
 phases:
  install:
    commands:
-     - ls -al /etc/apt/apt.conf.d/
+     - cat  /etc/apt/apt.conf.d/*
+     - rm -f /etc/apt/apt.conf.d/autoremove
      - ls -al /var/cache/apt/
      - |
          export DEBIAN_FRONTEND=noninteractive
