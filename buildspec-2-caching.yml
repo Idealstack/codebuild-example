@@ -11,7 +11,7 @@ phases:
          LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
          apt-get update
 
-         # Install PHP
+         # Install PHP 7.1.  The ondrej/php repository also contains other versions of php, try just changing the version number
          apt-get install -y php7.1\
                   php7.1-ldap \
                   php7.1-xml \
@@ -45,6 +45,7 @@ phases:
          npm install -g gulp
          npm install -g grunt
          npm install -g bower
+         npm install -g yarn
          npm install -g webpack
      - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
  build:
@@ -65,6 +66,6 @@ phases:
 cache:
   paths:
     - '/var/cache/apt/archives'
-    - '~/.composer'
-    - '~/.npm'
-    - '/usr/lib/node_modules/'
+    - '/root/.composer'
+    - '/root/.npm'
+    - '/usr/lib/node_modules'
