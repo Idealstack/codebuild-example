@@ -2,11 +2,12 @@ version: 0.2
 phases:
  install:
    commands:
-     #This file configures apt to remove it's cache after installs - we want this cache, so we remove this config
+     # This file configures apt to remove it's cache after installs - we want this cache, so we remove this config
      - rm -f /etc/apt/apt.conf.d/docker-clean
 
-     #Install required packages
+     # Install required packages
      - |
+         set -e
          export DEBIAN_FRONTEND=noninteractive
 
          #Install php7.1
@@ -79,9 +80,13 @@ phases:
 
      # Deployment to the SFTP server
      - |
+        set -e
+
         # Determine what git branch we're on, we only want to deploy master
         export CODEBUILD_GIT_BRANCH=`git symbolic-ref HEAD --short 2>/dev/null`
-        if  [[ "$CODEBUILD_GIT_BRANCH" == 'master' ]]; then
+        echo "On branch $CODEBUILD_GIT_BRANCH"
+        if  [[ "$CODEBUILD_GIT_BRANCH" != 'master' ]]; then
+          echo "On branch $CODEBUILD_GIT_BRANCH ; not deploying as not master"
           exit 0
         fi
 
@@ -95,10 +100,10 @@ phases:
         chmod 600 ~/.ssh/*
 
         # Upload Files
-        scp -o "StrictHostKeyChecking=no" -v -P ${SFTP_PORT} -r . ${SSH_USERNAME}@${SSH_SERVER}:~/public_html/
+        scp -o "StrictHostKeyChecking=no" -P ${SFTP_PORT} -r . ${SSH_USERNAME}@${SSH_SERVER}:~/public_html/
 
         # Run any necessary remote commands
-        ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader; php artisan migrate'
+        ssh -o "StrictHostKeyChecking=no"  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader; php artisan migrate'
 
 cache:
   paths:
