@@ -91,7 +91,7 @@ phases:
         fi
 
         # Install SSH client so we can deploy
-        apt-get install -y openssh-client
+        apt-get install -y openssh-client rsync
 
         # Setup the SSH key
         mkdir ~/.ssh
@@ -100,7 +100,7 @@ phases:
         chmod 600 ~/.ssh/*
 
         # Upload Files
-        scp -o "StrictHostKeyChecking=no" -P ${SFTP_PORT} -r . ${SSH_USERNAME}@${SSH_SERVER}:~/public_html/
+        rsync -arvce "ssh StrictHostKeyChecking=no -p ${SFTP_PORT}"  . ${SSH_USERNAME}@${SSH_SERVER}:~/public_html/
 
         # Run any necessary remote commands
         ssh -o "StrictHostKeyChecking=no"  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader; php artisan migrate'
