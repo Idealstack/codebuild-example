@@ -53,6 +53,8 @@ phases:
      # Start Mysql if you need it
      # - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
 
+     - env
+
  build:
    commands:
      - echo Build started on `date`
@@ -81,17 +83,15 @@ phases:
 
      # Setup the SSH key
      - mkdir ~/.ssh
-     - echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
      - chmod 700 ~/.ssh
-#     - cat ~/.ssh/id_rsa
-
+     - echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
      - chmod 600 ~/.ssh/*
 
      # Upload Files
-     - scp -o "StrictHostKeyChecking=no" -v -P ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
+     - scp -o "StrictHostKeyChecking=no" -v -P ${SFTP_PORT} -r . ${SSH_USERNAME}@${SSH_SERVER}:/public_html
 
      # Run any necessary remote commands
-     - ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader'
+     - ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader; php artisan migrate'
 
 
 
