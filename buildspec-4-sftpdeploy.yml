@@ -2,6 +2,10 @@ version: 0.2
 phases:
  install:
    commands:
+     #This file configures apt to remove it's cache after installs - we want this cache, so we remove this config
+     - rm -f /etc/apt/apt.conf.d/docker-clean
+
+     #Install required packages
      - |
          export DEBIAN_FRONTEND=noninteractive
 
@@ -11,7 +15,7 @@ phases:
          LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php
          apt-get update
 
-         # Install PHP
+         # Install PHP 7.1.  The ondrej/php repository also contains other versions of php, try just changing the version number
          apt-get install -y php7.1\
                   php7.1-ldap \
                   php7.1-xml \
@@ -46,7 +50,9 @@ phases:
          #npm install -g grunt
          #npm install -g webpack
 
+    # Start Mysql if you need it
      - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
+
  build:
    commands:
      - echo Build started on `date`
@@ -56,8 +62,34 @@ phases:
  post_build:
    commands:
      - echo Build completed on `date`
-     #Do you need to do this? In many cases phpunit will use sqllite or similar to avoid the need for a real DB.
+
+     # Create a mysql database
+     # Do you need to do this? In many cases phpunit will use sqllite or similar to avoid the need for a real DB.
      # If you don't need it delete it
      - /usr/bin/mysql  -u root -e "GRANT ALL ON *.* TO 'test'@'localhost' IDENTIFIED BY '' WITH GRANT OPTION"
      - mysqladmin -u test create test
-     - ./vendor/bin/phpunit
+
+     # Run your tests
+     - ./vendor/bin/phpunit --coverage-html coverage
+
+     - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}/coverage"
+
+     # Deployment to the SFTP server
+     - echo $SSH_KEY > ~/.ssh/id_rsa
+     - echo $SSH_KEY
+     - scp  -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
+     - ssh ${SSH_USERNAME}@${SSH_SERVER} -p ${SFTP_PORT} rm -f .cache
+
+
+
+cache:
+  paths:
+    #Debian package caches, so we don't need to keep redownloading debian packages:
+    - /var/cache/apt/**/*
+
+    # Composer cache:
+    - /root/.composer/**/*
+
+    # Node modules, if you need nodejs based tools like webpack during your build
+    - /root/.npm/**/*
+    - /usr/lib/node_modules/**/*
