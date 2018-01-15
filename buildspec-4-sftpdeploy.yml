@@ -82,7 +82,7 @@ phases:
      #Setup the SSH key
      - echo $SSH_KEY
      - mkdir ~/.ssh
-     - echo $SSH_KEY > ~/.ssh/id_rsa
+     - echo $SSH_KEY | base64 > ~/.ssh/id_rsa
      - chmod 700 ~/.ssh
      - chmod 400 ~/.ssh/id_rsa
 
