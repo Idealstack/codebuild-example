@@ -75,8 +75,11 @@ phases:
      - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}/coverage"
 
      # Deployment to the SFTP server
-     - echo $SSH_KEY > ~/.ssh/id_rsa
      - echo $SSH_KEY
+     - mkdir ~/.ssh
+     - echo $SSH_KEY > ~/.ssh/id_rsa
+     - chmod 700 ~/.ssh
+     - chmod 400 ~/.ssh/id_rsa
      - scp  -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
      - ssh ${SSH_USERNAME}@${SSH_SERVER} -p ${SFTP_PORT} rm -f .cache
 
@@ -86,6 +89,7 @@ cache:
   paths:
     #Debian package caches, so we don't need to keep redownloading debian packages:
     - /var/cache/apt/**/*
+    - /var/lib/apt/lists/**/*
 
     # Composer cache:
     - /root/.composer/**/*

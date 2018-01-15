@@ -79,6 +79,7 @@ cache:
   paths:
     #Debian package caches, so we don't need to keep redownloading debian packages:
     - /var/cache/apt/**/*
+    - /var/lib/apt/lists/**/*
 
     # Composer cache:
     - /root/.composer/**/*
