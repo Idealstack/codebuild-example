@@ -86,6 +86,9 @@ phases:
      - chmod 700 ~/.ssh
      - chmod 400 ~/.ssh/id_rsa
 
+     # Ensure the known_hosts file knows about the ssh server
+     - ssh-keyscan -H -t rsa ${SSH_SERVER  >> ~/.ssh/known_hosts
+
      #Upload Files
      - scp  -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
 
