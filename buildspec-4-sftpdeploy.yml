@@ -80,9 +80,9 @@ phases:
      - apt-get install -y openssh-client
 
      #Setup the SSH key
-     - echo $SSH_KEY
+     - echo $SSH_KEY | base64 -d
      - mkdir ~/.ssh
-     - echo $SSH_KEY | base64 > ~/.ssh/id_rsa
+     - echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
      - chmod 700 ~/.ssh
      - chmod 400 ~/.ssh/id_rsa
 
