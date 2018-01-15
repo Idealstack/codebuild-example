@@ -83,7 +83,7 @@ phases:
      - mkdir ~/.ssh
      - echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
      - chmod 700 ~/.ssh
-     - chmod 400 ~/.ssh/id_rsa
+     - chmod 600 ~/.ssh/id_rsa
      - cat ~/.ssh/id_rsa
 
      # Ensure the known_hosts file knows about the ssh server
