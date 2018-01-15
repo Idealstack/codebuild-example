@@ -33,7 +33,7 @@ phases:
          phpenmod xdebug
 
          # Install MySQL (do you need it? If not, delete this)
-         apt-get install -y mysql-server
+         # apt-get install -y mysql-server
 
          #Install composer
          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -46,7 +46,8 @@ phases:
          #npm install -g grunt
          #npm install -g webpack
 
-     - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
+     # Start Mysql if you need it
+     # - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
  build:
    commands:
      - echo Build started on `date`
@@ -58,6 +59,6 @@ phases:
      - echo Build completed on `date`
      #Do you need to do this? In many cases phpunit will use sqllite or similar to avoid the need for a real DB.
      # If you don't need it delete it
-     - /usr/bin/mysql  -u root -e "GRANT ALL ON *.* TO 'test'@'localhost' IDENTIFIED BY '' WITH GRANT OPTION"
-     - mysqladmin -u test create test
+     # - /usr/bin/mysql  -u root -e "GRANT ALL ON *.* TO 'test'@'localhost' IDENTIFIED BY '' WITH GRANT OPTION"
+     # - mysqladmin -u test create test
      - ./vendor/bin/phpunit

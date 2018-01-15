@@ -37,7 +37,7 @@ phases:
          phpenmod xdebug
 
          # Install MySQL (do you need it? If not, delete this)
-         apt-get install -y mysql-server
+         # apt-get install -y mysql-server
 
          #Install composer
          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -51,7 +51,7 @@ phases:
          #npm install -g webpack
 
      # Start Mysql if you need it
-     - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
+     # - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
 
  build:
    commands:
@@ -80,17 +80,17 @@ phases:
      - apt-get install -y openssh-client
 
      #Setup the SSH key
-     - echo $SSH_KEY | base64 -d
      - mkdir ~/.ssh
      - echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
      - chmod 700 ~/.ssh
      - chmod 400 ~/.ssh/id_rsa
+     - cat ~/.ssh/id_rsa
 
      # Ensure the known_hosts file knows about the ssh server
      - ssh-keyscan -H -t rsa ${SSH_SERVER}  >> ~/.ssh/known_hosts
 
      #Upload Files
-     - scp  -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
+     - scp -vi ~/.ssh/id_rsa -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
 
      #Run any necessary remote commands
      - ssh ${SSH_USERNAME}@${SSH_SERVER} -p ${SFTP_PORT} composer install --optimize-autoloader
