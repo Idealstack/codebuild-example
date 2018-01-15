@@ -50,7 +50,7 @@ phases:
          #npm install -g grunt
          #npm install -g webpack
 
-    # Start Mysql if you need it
+     # Start Mysql if you need it
      - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
 
  build:
@@ -75,13 +75,22 @@ phases:
      - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}/coverage"
 
      # Deployment to the SFTP server
+
+     #Install SSH client so we can deploy
+     - apt-get install -y openssh-client
+
+     #Setup the SSH key
      - echo $SSH_KEY
      - mkdir ~/.ssh
      - echo $SSH_KEY > ~/.ssh/id_rsa
      - chmod 700 ~/.ssh
      - chmod 400 ~/.ssh/id_rsa
+
+     #Upload Files
      - scp  -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
-     - ssh ${SSH_USERNAME}@${SSH_SERVER} -p ${SFTP_PORT} rm -f .cache
+
+     #Run any necessary remote commands
+     - ssh ${SSH_USERNAME}@${SSH_SERVER} -p ${SFTP_PORT} composer install --optimize-autoloader
 
 
 
