@@ -85,14 +85,12 @@ phases:
      - chmod 700 ~/.ssh
 #     - cat ~/.ssh/id_rsa
 
-     # Ensure the known_hosts file knows about the ssh server
-     - ssh-keyscan -H -t rsa ${SSH_SERVER}  > ~/.ssh/known_hosts
      - chmod 600 ~/.ssh/*
      # Run any necessary remote commands
-     - ssh -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} composer install --optimize-autoloader
+     - ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} composer install --optimize-autoloader
 
      # Upload Files
-     - scp -v -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
+     - scp -o "StrictHostKeyChecking=no" -v -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
 
 
 
