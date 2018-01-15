@@ -89,17 +89,19 @@ phases:
      # Ensure the known_hosts file knows about the ssh server
      - ssh-keyscan -H -t rsa ${SSH_SERVER}  >> ~/.ssh/known_hosts
 
+     # Run any necessary remote commands
+     - ssh ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} composer install --optimize-autoloader
+     
      # Upload Files
      - scp -v -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
 
-     # Run any necessary remote commands
-     - ssh ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} composer install --optimize-autoloader
+
 
 
 
 cache:
   paths:
-    #Debian package caches, so we don't need to keep redownloading debian packages:
+    # Debian package caches, so we don't need to keep redownloading debian packages:
     - /var/cache/apt/**/*
     - /var/lib/apt/lists/**/*
 
