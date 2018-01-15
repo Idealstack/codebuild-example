@@ -77,7 +77,7 @@ phases:
      - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}/coverage"
 
      # Deployment to the SFTP server
-     - ./codebuild-deploy.sh
+     - bash ./codebuild-deploy.sh
 
 cache:
   paths:
