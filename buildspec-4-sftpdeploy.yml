@@ -78,7 +78,7 @@ phases:
      - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}/coverage"
 
      # Deployment to the SFTP server
-    - |
+     - |
         # Determine what git branch we're on, we only want to deploy master
         export CODEBUILD_GIT_BRANCH=`git symbolic-ref HEAD --short 2>/dev/null`
         if  [[ "$CODEBUILD_GIT_BRANCH" == 'master' ]]; then
