@@ -53,7 +53,8 @@ phases:
      # Start Mysql if you need it
      # - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
 
-     - env
+
+     - bash -c "$(curl -fsSL https://raw.githubusercontent.com/thii/aws-codebuild-extras/master/install)"
 
  build:
    commands:
@@ -77,24 +78,27 @@ phases:
      - aws s3 sync --delete  coverage/ "s3://${COVERAGE_S3_BUCKET}/coverage"
 
      # Deployment to the SFTP server
+    - |
+       # Determine what git branch we're on, we only want to deploy master
+       export CODEBUILD_GIT_BRANCH=`git symbolic-ref HEAD --short 2>/dev/null`
+       if  [[ "$CODEBUILD_GIT_BRANCH" == 'master' ]]; then
+        exit 0
+        fi
 
-     # Install SSH client so we can deploy
-     - apt-get install -y openssh-client
+       # Install SSH client so we can deploy
+       apt-get install -y openssh-client
 
-     # Setup the SSH key
-     - mkdir ~/.ssh
-     - chmod 700 ~/.ssh
-     - echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
-     - chmod 600 ~/.ssh/*
+       # Setup the SSH key
+       mkdir ~/.ssh
+       chmod 700 ~/.ssh
+       echo $SSH_KEY | base64 -d > ~/.ssh/id_rsa
+       chmod 600 ~/.ssh/*
 
-     # Upload Files
-     - scp -o "StrictHostKeyChecking=no" -v -P ${SFTP_PORT} -r . ${SSH_USERNAME}@${SSH_SERVER}:/public_html
+       # Upload Files
+       scp -o "StrictHostKeyChecking=no" -v -P ${SFTP_PORT} -r . ${SSH_USERNAME}@${SSH_SERVER}:/public_html
 
-     # Run any necessary remote commands
-     - ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader; php artisan migrate'
-
-
-
+       # Run any necessary remote commands
+       ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader; php artisan migrate'
 
 cache:
   paths:
