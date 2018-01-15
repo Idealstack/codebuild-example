@@ -36,9 +36,6 @@ phases:
          #Enable xdebug - phpunit uses this for code coverage
          phpenmod xdebug
 
-         # Install MySQL (do you need it? If not, delete this)
-         # apt-get install -y mysql-server
-
          #Install composer
          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
          php composer-setup.php ;
@@ -51,6 +48,7 @@ phases:
          #npm install -g webpack
 
      # Start Mysql if you need it
+     # - apt-get install -y mysql-server
      # - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
 
  build:

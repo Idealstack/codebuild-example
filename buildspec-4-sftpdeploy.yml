@@ -37,9 +37,6 @@ phases:
          #Enable xdebug - phpunit uses this for code coverage
          phpenmod xdebug
 
-         # Install MySQL (do you need it? If not, delete this)
-         # apt-get install -y mysql-server
-
          #Install composer
          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
          php composer-setup.php ;
@@ -52,6 +49,7 @@ phases:
          #npm install -g webpack
 
      # Start Mysql if you need it
+     # - apt-get install -y mysql-server
      # - su mysql -s /bin/bash -c "/usr/sbin/mysqld" &
 
 
@@ -85,7 +83,7 @@ phases:
         # Determine what git branch we're on, we only want to deploy master
         export CODEBUILD_GIT_BRANCH=`git symbolic-ref HEAD --short 2>/dev/null`
         echo "On branch $CODEBUILD_GIT_BRANCH"
-        if  [[ "$CODEBUILD_GIT_BRANCH" != 'master' ]]; then
+        if  [ "$CODEBUILD_GIT_BRANCH" != 'master' ]; then
           echo "On branch $CODEBUILD_GIT_BRANCH ; not deploying as not master"
           exit 0
         fi
@@ -100,7 +98,7 @@ phases:
         chmod 600 ~/.ssh/*
 
         # Upload Files
-        rsync -arvce "ssh StrictHostKeyChecking=no -p ${SFTP_PORT}"  . ${SSH_USERNAME}@${SSH_SERVER}:~/public_html/
+        rsync -arvce "ssh -o StrictHostKeyChecking=no -p ${SFTP_PORT}"  . ${SSH_USERNAME}@${SSH_SERVER}:~/public_html/
 
         # Run any necessary remote commands
         ssh -o "StrictHostKeyChecking=no"  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader; php artisan migrate'
