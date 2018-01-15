@@ -86,19 +86,19 @@ phases:
 #     - cat ~/.ssh/id_rsa
 
      - chmod 600 ~/.ssh/*
-     # Run any necessary remote commands
-     - ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} composer install --optimize-autoloader
 
      # Upload Files
      - scp -o "StrictHostKeyChecking=no" -v -p ${SFTP_PORT} -r build/ ${SSH_USERNAME}@${SSH_SERVER}:/public_html
 
+     # Run any necessary remote commands
+     - ssh -o "StrictHostKeyChecking=no" -v  ${SSH_USERNAME}@${SSH_SERVER} -p ${SSH_PORT} 'cd public_html ; composer install --optimize-autoloader'
 
 
 
 
 cache:
   paths:
-    # Debian package caches, so we don't need to keep redownloading debian packages:
+    # Debian package caches, so we don't need to keep redownloading debian packages and lists:
     - /var/cache/apt/**/*
     - /var/lib/apt/lists/**/*
 
