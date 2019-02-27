@@ -1,7 +1,9 @@
 <a href="https://idealstack.io/">
     <img src="https://idealstack.io/application/themes/idealstack/img/github-banner.svg" alt="Idealstack - the best way to run PHP on AWS" title="Idealstack - the best way to run PHP on AWS" align="right"  />
 </a>
-#Codebuild PHP Example
+
+# Codebuild PHP Example
+
 This repository provides an example of using Codebuild for PHP to test code, produce code coverage reports & deploy automatically to SFTP/SSH
 
 You probably want to read the articles we've posted showing how to set all this up:
